@@ -2,7 +2,6 @@ using BepInEx;
 using BepInEx.Logging;
 using DataTable;
 using HarmonyLib;
-using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using Loader.ID;
 using RF5AutoPickup.Print;
 
@@ -43,7 +42,7 @@ internal class ItemPropertyPatch
     ];
 
     internal static bool isPatched { get; set; } = false;
-
+    
     [HarmonyPatch(typeof(ItemDataTable), nameof(ItemDataTable.GetDataTable))]
     [HarmonyPrefix]
     internal static void AutoPickupFix(ItemID itemID)
@@ -64,10 +63,7 @@ internal class ItemPropertyPatch
                 }
             }
 
-            foreach (var item in ItemDataTable._ItemDataTableArray.DataTables)
-            {
-                PrintDatatypes.Print(Log, item);
-            }
+            PrintDatatypes.PrintDatatables(Log, ItemDataTable._ItemDataTableArray.DataTables);
 
             isPatched = true;
         }

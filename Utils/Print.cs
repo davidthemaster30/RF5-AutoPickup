@@ -1,11 +1,25 @@
 using BepInEx.Logging;
 using DataTable;
+using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using System.Text;
 
 namespace RF5AutoPickup.Print;
 
 internal static class PrintDatatypes
 {
+    internal static bool EnableLogging { get; set; } = false;
+
+    internal static void PrintDatatables(ManualLogSource Log, Il2CppArrayBase<SerializedItemDataTable> table)
+    {
+        if (EnableLogging && Log is not null && table is not null)
+        {
+            foreach (var item in table)
+            {
+                Print(Log, item);
+            }
+        }
+    }
+
     internal static void Print(ManualLogSource Log, SerializedItemDataTable item)
     {
         if (Log is not null && item is not null)
@@ -38,12 +52,9 @@ internal static class PrintDatatypes
 
     internal static bool PrintSerializedItemDataTableMembers(ref StringBuilder builder, SerializedItemDataTable item)
     {
-        builder.Append("Pointer = ");
-        builder.Append((object)item.Pointer);
-        builder.Append(", ID = ");
-        builder.Append((object)item.ID);
-        builder.Append(", ObjectClass = ");
-        builder.Append((object)item.ObjectClass);
+        builder.Append("Pointer = ").Append(item.Pointer);
+        builder.Append(", ID = ").Append(item.ID);
+        builder.Append(", ObjectClass = ").Append(item.ObjectClass);
         builder.Append(", Body = ");
         ItemDataTableToString(ref builder, item.Body);
         return true;
@@ -76,30 +87,18 @@ internal static class PrintDatatypes
 
     internal static bool PrintItemDataTableMembers(ref StringBuilder builder, ItemDataTable item)
     {
-        builder.Append("Pointer = ");
-        builder.Append(item.Pointer);
-        builder.Append(", CropID = ");
-        builder.Append(item.CropID);
-        builder.Append(", IsAutoPickup = ");
-        builder.Append(item.IsAutoPickup);
-        builder.Append(", ItemCategory = ");
-        builder.Append(item.ItemCategory);
-        builder.Append(", ItemIndex = ");
-        builder.Append(item.ItemIndex);
-        builder.Append(", ItemSize = ");
-        builder.Append(item.ItemSize);
-        builder.Append(", ItemType = ");
-        builder.Append(item.ItemType);
-        builder.Append(", ModelName = ");
-        builder.Append(item.ModelName);
-        builder.Append(", ObjectClass = ");
-        builder.Append(item.ObjectClass);
-        builder.Append(", OnGroundItemPrefabPath = ");
-        builder.Append(item.OnGroundItemPrefabPath);
-        builder.Append(", PrefabID = ");
-        builder.Append(item.PrefabID);
-        builder.Append(", ScreenName = ");
-        builder.Append(item.ScreenName);
+        builder.Append("Pointer = ").Append(item.Pointer);
+        builder.Append(", CropID = ").Append(item.CropID);
+        builder.Append(", IsAutoPickup = ").Append(item.IsAutoPickup);
+        builder.Append(", ItemCategory = ").Append(item.ItemCategory);
+        builder.Append(", ItemIndex = ").Append(item.ItemIndex);
+        builder.Append(", ItemSize = ").Append(item.ItemSize);
+        builder.Append(", ItemType = ").Append(item.ItemType);
+        builder.Append(", ModelName = ").Append(item.ModelName);
+        builder.Append(", ObjectClass = ").Append(item.ObjectClass);
+        builder.Append(", OnGroundItemPrefabPath = ").Append(item.OnGroundItemPrefabPath);
+        builder.Append(", PrefabID = ").Append(item.PrefabID);
+        builder.Append(", ScreenName = ").Append(item.ScreenName);
 
         return true;
     }
