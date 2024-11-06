@@ -7,7 +7,7 @@ namespace RF5AutoPickup.Print;
 
 internal static class PrintDatatypes
 {
-    internal static readonly ManualLogSource Log = BepInEx.Logging.Logger.CreateLogSource("ItemPropertyPatchLogger");
+    internal static readonly ManualLogSource Log = BepInEx.Logging.Logger.CreateLogSource("RF5AutoPickup.ItemPropertyPatch");
 
     internal static void PrintDatatables(Il2CppArrayBase<SerializedItemDataTable> table)
     {
