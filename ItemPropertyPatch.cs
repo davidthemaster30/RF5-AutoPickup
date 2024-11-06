@@ -1,6 +1,3 @@
-using BepInEx;
-using BepInEx.Logging;
-using DataTable;
 using HarmonyLib;
 using Loader.ID;
 using RF5AutoPickup.Print;
@@ -8,64 +5,105 @@ using RF5AutoPickup.Print;
 namespace RF5AutoPickup;
 
 [HarmonyPatch]
-internal class ItemPropertyPatch
+internal sealed class ItemPropertyPatch
 {
-    internal static readonly ManualLogSource Log = BepInEx.Logging.Logger.CreateLogSource("ItemPropertyPatchLogger");
     internal static readonly Prefab[] PrefabGrassesOnGroundToAutoPickup = [
-        Prefab.ITEM_ONGROUNDITEM_ONGROUNDITEM_ITEM_GRASS_0001,
-        Prefab.ITEM_ONGROUNDITEM_ONGROUNDITEM_ITEM_GRASS_0002,
-        Prefab.ITEM_ONGROUNDITEM_ONGROUNDITEM_ITEM_GRASS_0006,
-        Prefab.ITEM_ONGROUNDITEM_ONGROUNDITEM_ITEM_GRASS_0014,
-        Prefab.ITEM_ONGROUNDITEM_ONGROUNDITEM_ITEM_GRASS_0018,
-        Prefab.ITEM_ONGROUNDITEM_ONGROUNDITEM_ITEM_GRASS_0021,
-        Prefab.ITEM_ONGROUNDITEM_ONGROUNDITEM_ITEM_GRASS_0023,
-        Prefab.ITEM_ONGROUNDITEM_ONGROUNDITEM_ITEM_GRASS_0026,
-        Prefab.ITEM_ONGROUNDITEM_ONGROUNDITEM_ITEM_GRASS_0037,
-        Prefab.ITEM_ONGROUNDITEM_ONGROUNDITEM_ITEM_GRASS_0042,
-        Prefab.ITEM_ONGROUNDITEM_ONGROUNDITEM_ITEM_GRASS_0044,
-        Prefab.ITEM_ONGROUNDITEM_ONGROUNDITEM_ITEM_GRASS_0045
+        Prefab.ITEM_ONGROUNDITEM_ONGROUNDITEM_ITEM_GRASS_0001, //Indigo Grass
+        Prefab.ITEM_ONGROUNDITEM_ONGROUNDITEM_ITEM_GRASS_0002, //Blue Grass
+        Prefab.ITEM_ONGROUNDITEM_ONGROUNDITEM_ITEM_GRASS_0006, //Elli Leaves
+        Prefab.ITEM_ONGROUNDITEM_ONGROUNDITEM_ITEM_GRASS_0014, //Yellow Grass
+        Prefab.ITEM_ONGROUNDITEM_ONGROUNDITEM_ITEM_GRASS_0018, //Black Grass
+        Prefab.ITEM_ONGROUNDITEM_ONGROUNDITEM_ITEM_GRASS_0021, //Weeds
+        Prefab.ITEM_ONGROUNDITEM_ONGROUNDITEM_ITEM_GRASS_0023, //White Grass
+        Prefab.ITEM_ONGROUNDITEM_ONGROUNDITEM_ITEM_GRASS_0026, //Orange Grass
+        Prefab.ITEM_ONGROUNDITEM_ONGROUNDITEM_ITEM_GRASS_0037, //Antidote Grass
+        Prefab.ITEM_ONGROUNDITEM_ONGROUNDITEM_ITEM_GRASS_0042, //Green Grass
+        Prefab.ITEM_ONGROUNDITEM_ONGROUNDITEM_ITEM_GRASS_0044, //Purple Grass
+        Prefab.ITEM_ONGROUNDITEM_ONGROUNDITEM_ITEM_GRASS_0045  //Medicinal Herb
     ];
 
-    internal static readonly ItemID[] ItemIDGrassesOnGroundToAutoPickup = [
-        ItemID.Item_Grass_0001,
-        ItemID.Item_Grass_0002,
-        ItemID.Item_Grass_0006,
-        ItemID.Item_Grass_0014,
-        ItemID.Item_Grass_0018,
-        ItemID.Item_Grass_0021,
-        ItemID.Item_Grass_0023,
-        ItemID.Item_Grass_0026,
-        ItemID.Item_Grass_0037,
-        ItemID.Item_Grass_0042,
-        ItemID.Item_Grass_0044,
-        ItemID.Item_Grass_0045
-    ];
+    internal static readonly Prefab WitheredGrassPrefab = Prefab.ITEM_ONGROUNDITEM_ONGROUNDITEM_ITEM_GRASS_0013; //Withered Grass
+    internal static readonly Prefab RockPrefab = Prefab.ITEM_ONGROUNDITEM_ONGROUNDITEM_ITEM_COLLECTION_0175; //Rock
+    internal static readonly Prefab BranchPrefab = Prefab.ITEM_ONGROUNDITEM_ONGROUNDITEM_ITEM_COLLECTION_0176; //Branch
+    internal static readonly Prefab CornPrefab = Prefab.ITEM_ONGROUNDITEM_ONGROUNDITEM_ITEM_CROP_0034; //Corn
 
     internal static bool isPatched { get; set; } = false;
-    
+
     [HarmonyPatch(typeof(ItemDataTable), nameof(ItemDataTable.GetDataTable))]
     [HarmonyPrefix]
     internal static void AutoPickupFix(ItemID itemID)
     {
         //result is a ref and models use pointers, so only need to run once
-        if (isPatched)
+        if (AutoPickup.IsModDisabled() || isPatched)
         {
             return;
         }
 
+        //Wait until datatables is populated before updating
         if (ItemDataTable._ItemDataTableArray?.DataTables is not null)
         {
-            foreach (var item in ItemDataTable._ItemDataTableArray.DataTables)
-            {
-                if (item.Body is not null && PrefabGrassesOnGroundToAutoPickup.Contains(item.Body.PrefabID))
-                {
-                    item.Body.IsAutoPickup = true;
-                }
-            }
+            AddAutoPickupGrasses();
+            AddAutoPickupWitheredGrass();
+            AddAutoPickupRocks();
+            AddAutoPickupBranches();
+            RemoveAutoPickupCorn();
 
-            PrintDatatypes.PrintDatatables(Log, ItemDataTable._ItemDataTableArray.DataTables);
+            PrintDatatypes.PrintDatatables(ItemDataTable._ItemDataTableArray.DataTables);
 
             isPatched = true;
+        }
+    }
+
+    internal static void AddAutoPickupGrasses()
+    {
+        if (AutoPickup.EnableAutoPickupGrasses?.Value == true)
+        {
+            var grasses = ItemDataTable._ItemDataTableArray.DataTables.Select(item => item.Body).Where(body => body is not null && PrefabGrassesOnGroundToAutoPickup.Contains(body.PrefabID));
+            foreach (var grass in grasses)
+            {
+                grass.IsAutoPickup = true;
+                PrintUpdates.ShowItemUpdate(grass);
+            }
+        }
+    }
+
+    internal static void AddAutoPickupWitheredGrass()
+    {
+        if (AutoPickup.EnableAutoPickupWitheredGrass?.Value == true)
+        {
+            var witheredGrass = ItemDataTable._ItemDataTableArray.DataTables.Select(item => item.Body).Single(body => body is not null && body.PrefabID == WitheredGrassPrefab);
+            witheredGrass.IsAutoPickup = true;
+            PrintUpdates.ShowItemUpdate(witheredGrass);
+        }
+    }
+
+    internal static void AddAutoPickupRocks()
+    {
+        if (AutoPickup.EnableAutoPickupRocks?.Value == true)
+        {
+            var rock = ItemDataTable._ItemDataTableArray.DataTables.Select(item => item.Body).Single(body => body is not null && body.PrefabID == RockPrefab);
+            rock.IsAutoPickup = true;
+            PrintUpdates.ShowItemUpdate(rock);
+        }
+    }
+
+    internal static void AddAutoPickupBranches()
+    {
+        if (AutoPickup.EnableAutoPickupBranches?.Value == true)
+        {
+            var branch = ItemDataTable._ItemDataTableArray.DataTables.Select(item => item.Body).Single(body => body is not null && body.PrefabID == BranchPrefab);
+            branch.IsAutoPickup = true;
+            PrintUpdates.ShowItemUpdate(branch);
+        }
+    }
+
+    internal static void RemoveAutoPickupCorn()
+    {
+        if (AutoPickup.DisableAutoPickupCorn?.Value == true)
+        {
+            var corn = ItemDataTable._ItemDataTableArray.DataTables.Select(item => item.Body).Single(body => body is not null && body.PrefabID == CornPrefab);
+            corn.IsAutoPickup = false;
+            PrintUpdates.ShowItemUpdate(corn);
         }
     }
 }
