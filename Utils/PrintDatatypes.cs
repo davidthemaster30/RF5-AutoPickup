@@ -7,20 +7,23 @@ namespace RF5AutoPickup.Print;
 
 internal static class PrintDatatypes
 {
-    internal static bool EnableLogging { get; set; } = false;
+    internal static readonly ManualLogSource Log = BepInEx.Logging.Logger.CreateLogSource("ItemPropertyPatchLogger");
 
-    internal static void PrintDatatables(ManualLogSource Log, Il2CppArrayBase<SerializedItemDataTable> table)
+    internal static void PrintDatatables(Il2CppArrayBase<SerializedItemDataTable> table)
     {
-        if (EnableLogging && Log is not null && table is not null)
+        if (AutoPickup.EnableDumpItemDataTablesLogging?.Value == true && Log is not null && table is not null)
         {
             foreach (var item in table)
             {
-                Print(Log, item);
+                Print(item);
             }
+
+            //Only need to run once
+            AutoPickup.EnableDumpItemDataTablesLogging.Value = false;
         }
     }
 
-    internal static void Print(ManualLogSource Log, SerializedItemDataTable item)
+    internal static void Print(SerializedItemDataTable item)
     {
         if (Log is not null && item is not null)
         {
@@ -28,7 +31,7 @@ internal static class PrintDatatypes
         }
     }
 
-    internal static void Print(ManualLogSource Log, ItemDataTable item)
+    internal static void Print(ItemDataTable item)
     {
         if (Log is not null && item is not null)
         {
@@ -36,8 +39,13 @@ internal static class PrintDatatypes
         }
     }
 
-    internal static string SerializedItemDataTableToString(SerializedItemDataTable item)
+    private static string SerializedItemDataTableToString(SerializedItemDataTable item)
     {
+        if (item is null)
+        {
+            return string.Empty;
+        }
+
         StringBuilder builder = new StringBuilder();
         builder.Append("SerializedItemDataTable");
         builder.Append(" { ");
@@ -50,8 +58,13 @@ internal static class PrintDatatypes
         return builder.ToString();
     }
 
-    internal static bool PrintSerializedItemDataTableMembers(ref StringBuilder builder, SerializedItemDataTable item)
+    private static bool PrintSerializedItemDataTableMembers(ref StringBuilder builder, SerializedItemDataTable item)
     {
+        if (builder is null || item is null)
+        {
+            return false;
+        }
+
         builder.Append("Pointer = ").Append(item.Pointer);
         builder.Append(", ID = ").Append(item.ID);
         builder.Append(", ObjectClass = ").Append(item.ObjectClass);
@@ -60,18 +73,18 @@ internal static class PrintDatatypes
         return true;
     }
 
-    internal static string ItemDataTableToString(ItemDataTable item)
+    private static string ItemDataTableToString(ItemDataTable item)
     {
         StringBuilder builder = new StringBuilder();
 
         return ItemDataTableToString(ref builder, item);
     }
 
-    internal static string ItemDataTableToString(ref StringBuilder builder, ItemDataTable item)
+    private static string ItemDataTableToString(ref StringBuilder builder, ItemDataTable item)
     {
-        if (item is null)
+        if (builder is null || item is null)
         {
-            return String.Empty;
+            return string.Empty;
         }
 
         builder.Append("ItemDataTable");
@@ -85,8 +98,13 @@ internal static class PrintDatatypes
         return builder.ToString();
     }
 
-    internal static bool PrintItemDataTableMembers(ref StringBuilder builder, ItemDataTable item)
+    private static bool PrintItemDataTableMembers(ref StringBuilder builder, ItemDataTable item)
     {
+        if (builder is null || item is null)
+        {
+            return false;
+        }
+
         builder.Append("Pointer = ").Append(item.Pointer);
         builder.Append(", CropID = ").Append(item.CropID);
         builder.Append(", IsAutoPickup = ").Append(item.IsAutoPickup);
