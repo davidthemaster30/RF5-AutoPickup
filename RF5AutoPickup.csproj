@@ -8,27 +8,28 @@
     <LangVersion>latest</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <RootNamespace>RF5AutoPickup</RootNamespace>
-    <RestoreAdditionalProjectSources>
-      https://api.nuget.org/v3/index.json;
-      https://nuget.bepinex.dev/v3/index.json;
-      https://nuget.samboy.dev/v3/index.json
-    </RestoreAdditionalProjectSources>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.*" IncludeAssets="compile" />
-    <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <Reference Include="0Harmony">
+      <HintPath>libs\0Harmony.dll</HintPath>
+    </Reference>
     <Reference Include="Assembly-CSharp">
-      <HintPath>libs\Assembly-CSharp.dll</HintPath>
+      <HintPath>libs\unhollowed\Assembly-CSharp.dll</HintPath>
+    </Reference>    
+    <Reference Include="BepInEx.Core">
+      <HintPath>libs\BepInEx.Core.dll</HintPath>
     </Reference>
+    <Reference Include="BepInEx.IL2CPP">
+      <HintPath>libs\BepInEx.IL2CPP.dll</HintPath>
+    </Reference>
+
     <Reference Include="Il2Cppmscorlib">
-      <HintPath>libs\Il2Cppmscorlib.dll</HintPath>
+      <HintPath>libs\unhollowed\Il2Cppmscorlib.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.CoreModule">
-      <HintPath>libs\UnityEngine.CoreModule.dll</HintPath>
+
+    <Reference Include="UnhollowerBaseLib">
+      <HintPath>libs\UnhollowerBaseLib.dll</HintPath>
     </Reference>
   </ItemGroup>
 

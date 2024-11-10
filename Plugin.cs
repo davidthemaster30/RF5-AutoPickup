@@ -1,5 +1,5 @@
 ﻿using BepInEx;
-using BepInEx.Unity.IL2CPP;
+using BepInEx.IL2CPP;
 using BepInEx.Logging;
 using BepInEx.Configuration;
 
