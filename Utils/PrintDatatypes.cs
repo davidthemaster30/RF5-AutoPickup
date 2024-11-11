@@ -1,7 +1,14 @@
 using BepInEx.Logging;
 using DataTable;
-using UnhollowerBaseLib;
 using System.Text;
+
+#if (NETSTANDARD2_1)
+using UnhollowerBaseLib;
+#endif
+
+#if (NET6_0)
+using Il2CppInterop.Runtime.InteropTypes.Arrays;
+#endif
 
 namespace RF5AutoPickup.Print;
 

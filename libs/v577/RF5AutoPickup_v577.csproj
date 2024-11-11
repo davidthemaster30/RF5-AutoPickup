@@ -1,0 +1,40 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <AssemblyName>RF5AutoPickup</AssemblyName>
+    <Description>RF5AutoPickup</Description>
+    <Product>RF5AutoPickup</Product>
+    <Version>1.1.1</Version>
+    <LangVersion>latest</LangVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <RootNamespace>RF5AutoPickup</RootNamespace>
+    <RestoreAdditionalProjectSources>
+      https://api.nuget.org/v3/index.json;
+      https://nuget.bepinex.dev/v3/index.json;
+      https://nuget.samboy.dev/v3/index.json
+    </RestoreAdditionalProjectSources>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BepInEx.Core" Version="6.0.0-be.577" />
+    <PackageReference Include="BepInEx.IL2CPP" Version="6.0.0-be.577" />
+    <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>libs\v577\Assembly-CSharp.dll</HintPath>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Reference>
+    <Reference Include="Il2Cppmscorlib">
+      <HintPath>libs\v577\Il2Cppmscorlib.dll</HintPath>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="RF5AutoPickup.cfg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+</Project>

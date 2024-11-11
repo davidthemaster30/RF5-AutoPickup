@@ -1,8 +1,15 @@
 ﻿using BepInEx;
-using BepInEx.IL2CPP;
 using BepInEx.Configuration;
-
 using HarmonyLib;
+
+#if (NETSTANDARD2_1)
+using BepInEx.IL2CPP;
+#endif
+
+#if (NET6_0)
+using BepInEx.Unity.IL2CPP;
+#endif
+
 
 namespace RF5AutoPickup;
 
