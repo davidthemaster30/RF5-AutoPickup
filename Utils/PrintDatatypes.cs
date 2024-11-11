@@ -8,10 +8,11 @@ namespace RF5AutoPickup.Print;
 internal static class PrintDatatypes
 {
     internal static readonly ManualLogSource Log = BepInEx.Logging.Logger.CreateLogSource("RF5AutoPickup.ItemPropertyPatch");
+    private static bool HasPrintedTable { get; set; } = false;
 
     internal static void PrintDatatables(Il2CppArrayBase<SerializedItemDataTable> table)
     {
-        if (AutoPickup.EnableDumpItemDataTablesLogging?.Value == true && Log is not null && table is not null)
+        if (AutoPickup.EnableDumpItemDataTablesLogging?.Value == true && !HasPrintedTable && Log is not null && table is not null && table.Count > 100)
         {
             foreach (var item in table)
             {
@@ -19,7 +20,7 @@ internal static class PrintDatatypes
             }
 
             //Only need to run once
-            AutoPickup.EnableDumpItemDataTablesLogging.Value = false;
+            HasPrintedTable = true;
         }
     }
 
