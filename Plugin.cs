@@ -1,6 +1,5 @@
 ﻿using BepInEx;
 using BepInEx.IL2CPP;
-using BepInEx.Logging;
 using BepInEx.Configuration;
 
 using HarmonyLib;
@@ -15,18 +14,18 @@ public class AutoPickup : BasePlugin
     private const string PluginGUID = "RF5AutoPickup";
     private const string PluginName = "RF5AutoPickup";
     private const string PluginConfigSection = "Auto Pickup Changes";
-    private const string PluginVersion = "1.1.0";
+    private const string PluginVersion = "1.1.1";
     private const string GameProcessName = "Rune Factory 5.exe";
     #endregion
 
-    internal static ConfigEntry<bool>? EnableAutoPickupGrasses;
-    internal static ConfigEntry<bool>? EnableAutoPickupRocks;
-    internal static ConfigEntry<bool>? EnableAutoPickupBranches;
-    internal static ConfigEntry<bool>? EnableAutoPickupWitheredGrass;
-    internal static ConfigEntry<bool>? DisableAutoPickupCorn;
+    internal static ConfigEntry<bool> EnableAutoPickupGrasses;
+    internal static ConfigEntry<bool> EnableAutoPickupRocks;
+    internal static ConfigEntry<bool> EnableAutoPickupBranches;
+    internal static ConfigEntry<bool> EnableAutoPickupWitheredGrass;
+    internal static ConfigEntry<bool> DisableAutoPickupCorn;
 
-    internal static ConfigEntry<bool>? EnableLogging;
-    internal static ConfigEntry<bool>? EnableDumpItemDataTablesLogging;
+    internal static ConfigEntry<bool> EnableLogging;
+    internal static ConfigEntry<bool> EnableDumpItemDataTablesLogging;
 
     internal static bool IsModDisabled()
     {
@@ -51,7 +50,7 @@ public class AutoPickup : BasePlugin
         EnableAutoPickupWitheredGrass = Config.Bind(PluginConfigSection, nameof(EnableAutoPickupWitheredGrass), true, "Set to true to enable auto pickup withered grass.");
         DisableAutoPickupCorn = Config.Bind(PluginConfigSection, nameof(DisableAutoPickupCorn), false, "Set to true to disable auto pickup of corn.");
 
-        EnableDumpItemDataTablesLogging = Config.Bind("Debug", nameof(EnableDumpItemDataTablesLogging), true, "Set to true output itemdatatables to log for mod developpement (NOT RECOMMENDED).");
+        EnableDumpItemDataTablesLogging = Config.Bind("Debug", nameof(EnableDumpItemDataTablesLogging), false, "Set to true output itemdatatables to log for mod developpement (NOT RECOMMENDED).");
 
 
         Harmony.CreateAndPatchAll(typeof(ItemPropertyPatch));
