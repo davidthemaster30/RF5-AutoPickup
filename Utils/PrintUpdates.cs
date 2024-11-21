@@ -5,7 +5,7 @@ namespace RF5AutoPickup.Print;
 
 internal static class PrintUpdates
 {
-    internal static readonly ManualLogSource Log = BepInEx.Logging.Logger.CreateLogSource("ItemPropertyPatchLogger");
+    internal static readonly ManualLogSource Log = BepInEx.Logging.Logger.CreateLogSource("RF5AutoPickup");
 
     internal static void ShowItemUpdate(ItemDataTable item)
     {
@@ -22,6 +22,7 @@ internal static class PrintUpdates
             Log.LogError(ex);
         }
     }
+
     internal static void PrintRemainingItems(Dictionary<ItemID, bool> ItemsToUpdate)
     {
         Log.LogInfo($"Printing list of remaining items.");
@@ -43,5 +44,10 @@ internal static class PrintUpdates
     internal static void AllItemsPatched()
     {
         Log.LogInfo("Alls items patched for auto pickup.");
+    }
+
+    internal static void PrintSettingChanged(object sender, BepInEx.Configuration.SettingChangedEventArgs e)
+    {
+        Log.LogInfo($"{e.ChangedSetting.Definition} Setting has changed.");
     }
 }
