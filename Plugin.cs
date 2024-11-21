@@ -21,7 +21,7 @@ public class AutoPickup : BasePlugin
     private const string PluginGUID = "RF5AutoPickup";
     private const string PluginName = "RF5AutoPickup";
     private const string PluginConfigSection = "Auto Pickup Changes";
-    private const string PluginVersion = "1.1.1";
+    private const string PluginVersion = "1.2.0";
     private const string GameProcessName = "Rune Factory 5.exe";
     #endregion
 
