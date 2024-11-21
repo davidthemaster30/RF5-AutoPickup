@@ -24,11 +24,11 @@
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
       <HintPath>libs\Assembly-CSharp.dll</HintPath>
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <Private>false</Private>
     </Reference>
     <Reference Include="Il2Cppmscorlib">
       <HintPath>libs\Il2Cppmscorlib.dll</HintPath>
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <Private>false</Private>
     </Reference>
   </ItemGroup>
 
