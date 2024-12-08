@@ -41,13 +41,13 @@ internal static class ItemPropertyPatch
             //First pass has items IDs added according to initial config
             foreach (var item in KnownItemIDs.ItemIDGrassesOnGroundToAutoPickupEng)
             {
-                ItemsToUpdate.Add(item, AutoPickup.EnableAutoPickupGrasses.Value);
+                ItemsToUpdate.Add(item, false);
             }
 
-            ItemsToUpdate.Add(KnownItemIDs.WitheredGrassItemID, AutoPickup.EnableAutoPickupWitheredGrass.Value);
-            ItemsToUpdate.Add(KnownItemIDs.RockItemID, AutoPickup.EnableAutoPickupRocks.Value);
-            ItemsToUpdate.Add(KnownItemIDs.BranchItemID, AutoPickup.EnableAutoPickupBranches.Value);
-            ItemsToUpdate.Add(KnownItemIDs.CornItemID, AutoPickup.DisableAutoPickupCorn.Value);
+            ItemsToUpdate.Add(KnownItemIDs.WitheredGrassItemID, false);
+            ItemsToUpdate.Add(KnownItemIDs.RockItemID, false);
+            ItemsToUpdate.Add(KnownItemIDs.BranchItemID, false);
+            ItemsToUpdate.Add(KnownItemIDs.CornItemID, false);
         }
     }
 
@@ -57,42 +57,42 @@ internal static class ItemPropertyPatch
     internal static void AutoPickupFix(ItemID itemID, ref ItemDataTable __result)
     {
         //result is a ref and models use pointers, so only need to run once
-        if (AutoPickup.IsModDisabled() || isPatched || __result is null)
+        if (AutoPickupPlugin.IsModDisabled() || isPatched || __result is null)
         {
             return;
         }
 
         if (KnownItemIDs.ItemIDGrassesOnGroundToAutoPickupEng.Contains(itemID))
         {
-            __result.IsAutoPickup = AutoPickup.EnableAutoPickupGrasses.Value;
+            __result.IsAutoPickup = AutoPickupPlugin.EnableAutoPickupGrasses.Value;
             PrintUpdates.ShowItemUpdate(__result);
             TrackUpdate(itemID);
         }
 
         if (itemID == KnownItemIDs.WitheredGrassItemID)
         {
-            __result.IsAutoPickup = AutoPickup.EnableAutoPickupWitheredGrass.Value;
+            __result.IsAutoPickup = AutoPickupPlugin.EnableAutoPickupWitheredGrass.Value;
             PrintUpdates.ShowItemUpdate(__result);
             TrackUpdate(itemID);
         }
 
         if (itemID == KnownItemIDs.RockItemID)
         {
-            __result.IsAutoPickup = AutoPickup.EnableAutoPickupRocks.Value;
+            __result.IsAutoPickup = AutoPickupPlugin.EnableAutoPickupRocks.Value;
             PrintUpdates.ShowItemUpdate(__result);
             TrackUpdate(itemID);
         }
 
         if (itemID == KnownItemIDs.BranchItemID)
         {
-            __result.IsAutoPickup = AutoPickup.EnableAutoPickupBranches.Value;
+            __result.IsAutoPickup = AutoPickupPlugin.EnableAutoPickupBranches.Value;
             PrintUpdates.ShowItemUpdate(__result);
             TrackUpdate(itemID);
         }
 
         if (itemID == KnownItemIDs.CornItemID)
         {
-            __result.IsAutoPickup = !AutoPickup.DisableAutoPickupCorn.Value;
+            __result.IsAutoPickup = !AutoPickupPlugin.DisableAutoPickupCorn.Value;
             PrintUpdates.ShowItemUpdate(__result);
             TrackUpdate(itemID);
         }
