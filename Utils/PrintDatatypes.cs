@@ -19,7 +19,7 @@ internal static class PrintDatatypes
 
     internal static void PrintDatatables(Il2CppArrayBase<SerializedItemDataTable> table)
     {
-        if (AutoPickup.EnableDumpItemDataTablesLogging?.Value == true && !HasPrintedTable && Log is not null && table is not null && table.Count > 100)
+        if (AutoPickupPlugin.EnableDumpItemDataTablesLogging?.Value == true && !HasPrintedTable && Log is not null && table is not null && table.Count > 100)
         {
             foreach (var item in table)
             {

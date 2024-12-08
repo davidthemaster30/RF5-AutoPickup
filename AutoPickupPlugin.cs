@@ -1,29 +1,16 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
 using HarmonyLib;
-
-#if (NETSTANDARD2_1)
-using BepInEx.IL2CPP;
-#endif
-
-#if (NET6_0)
 using BepInEx.Unity.IL2CPP;
-#endif
-
 
 namespace RF5AutoPickup;
 
-[BepInPlugin(PluginGUID, PluginName, PluginVersion)]
+[BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
 [BepInProcess(GameProcessName)]
-public class AutoPickup : BasePlugin
+public class AutoPickupPlugin : BasePlugin
 {
-    #region PluginInfo
-    private const string PluginGUID = "RF5AutoPickup";
-    private const string PluginName = "RF5AutoPickup";
     private const string PluginConfigSection = "Auto Pickup Changes";
-    private const string PluginVersion = "1.2.0";
     private const string GameProcessName = "Rune Factory 5.exe";
-    #endregion
 
     internal static ConfigEntry<bool> EnableAutoPickupGrasses;
     internal static ConfigEntry<bool> EnableAutoPickupRocks;
@@ -43,7 +30,8 @@ public class AutoPickup : BasePlugin
         DisableAutoPickupCorn is not null && DisableAutoPickupCorn.Value;
     }
 
-    internal static void LoadConfig(ConfigFile Config){
+    internal void LoadConfig()
+    {
         EnableLogging = Config.Bind("General", nameof(EnableLogging), true, "Set to true to enable logging of changed values by the mod.");
 
         EnableAutoPickupGrasses = Config.Bind(PluginConfigSection, nameof(EnableAutoPickupGrasses), true, "Set to true to enable auto pickup grasses.");
@@ -62,12 +50,11 @@ public class AutoPickup : BasePlugin
 
     public override void Load()
     {
-        // Plugin startup logic
-        Log.LogInfo($"Plugin {PluginName} is loaded!");
+        Log.LogInfo($"Plugin {MyPluginInfo.PLUGIN_NAME} {MyPluginInfo.PLUGIN_VERSION} is loading!");
 
-        // Config
-        LoadConfig(Config);
-
+        LoadConfig();
         Harmony.CreateAndPatchAll(typeof(ItemPropertyPatch));
+
+        Log.LogInfo($"Plugin {MyPluginInfo.PLUGIN_NAME} {MyPluginInfo.PLUGIN_VERSION} is loaded!");
     }
 }

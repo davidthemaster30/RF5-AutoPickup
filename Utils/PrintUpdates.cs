@@ -9,7 +9,7 @@ internal static class PrintUpdates
 
     internal static void ShowItemUpdate(ItemDataTable item)
     {
-        if (AutoPickup.EnableLogging?.Value == true && item is not null && !string.IsNullOrWhiteSpace(item.ScreenName))
+        if (AutoPickupPlugin.EnableLogging?.Value == true && item is not null && !string.IsNullOrWhiteSpace(item.ScreenName))
         {
             Log.LogInfo($"{item.ScreenName} has been updated to {(item.IsAutoPickup ? "enable" : "disable")} auto pickup!");
         }
@@ -17,7 +17,7 @@ internal static class PrintUpdates
 
     internal static void PrintException(Exception ex)
     {
-        if (AutoPickup.EnableLogging?.Value == true && Log is not null)
+        if (AutoPickupPlugin.EnableLogging?.Value == true && Log is not null)
         {
             Log.LogError(ex);
         }
