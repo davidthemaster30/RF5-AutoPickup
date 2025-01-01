@@ -5,6 +5,7 @@ internal static class KnownItemIDs
     internal static readonly ItemID[] ItemIDGrassesOnGroundToAutoPickupEng = [
         ItemID.Item_Grass_0001, //Indigo Grass
         ItemID.Item_Grass_0002, //Blue Grass
+        ItemID.Item_Grass_0004, //Red Grass
         ItemID.Item_Grass_0006, //Elli Leaves
         ItemID.Item_Grass_0014, //Yellow Grass
         ItemID.Item_Grass_0018, //Black Grass
@@ -20,6 +21,7 @@ internal static class KnownItemIDs
     internal static readonly ItemID[] ItemIDGrassesOnGroundToAutoPickupJap = [
         ItemID.Item_Ainokusa, //Indigo Grass
         ItemID.Item_Aoikusa, //Blue Grass
+        ItemID.Item_Akaikusa, //Red Grass
         ItemID.Item_Erikusa, //Elli Leaves
         ItemID.Item_Kinokusa, //Yellow Grass
         ItemID.Item_Kuroikusa, //Black Grass
