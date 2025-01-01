@@ -6,7 +6,7 @@
     <Description>RF5AutoPickup</Description>
     <Product>RF5AutoPickup</Product>
     <Company>https://github.com/davidthemaster30/RF5-AutoPickup</Company>
-    <Version>1.2.1</Version>
+    <Version>1.3.0</Version>
     <LangVersion>latest</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <RootNamespace>RF5AutoPickup</RootNamespace>
@@ -31,6 +31,10 @@
     </Reference>
     <Reference Include="Il2Cppmscorlib">
       <HintPath>libs\Il2Cppmscorlib.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>libs\UnityEngine.CoreModule.dll</HintPath>
       <Private>false</Private>
     </Reference>
   </ItemGroup>
