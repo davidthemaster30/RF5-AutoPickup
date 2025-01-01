@@ -7,11 +7,11 @@ internal static class PrintUpdates
 {
     internal static readonly ManualLogSource Log = BepInEx.Logging.Logger.CreateLogSource("RF5AutoPickup");
 
-    internal static void ShowItemUpdate(ItemDataTable item)
+    internal static void AllItemsPatched()
     {
-        if (AutoPickupPlugin.EnableLogging?.Value == true && item is not null && !string.IsNullOrWhiteSpace(item.ScreenName))
+        if (AutoPickupPlugin.EnableLogging?.Value == true)
         {
-            Log.LogInfo($"{item.ScreenName} has been updated to {(item.IsAutoPickup ? "enable" : "disable")} auto pickup!");
+            Log.LogInfo("Alls items patched for auto pickup.");
         }
     }
 
@@ -41,13 +41,19 @@ internal static class PrintUpdates
         }
     }
 
-    internal static void AllItemsPatched()
-    {
-        Log.LogInfo("Alls items patched for auto pickup.");
-    }
-
     internal static void PrintSettingChanged(object sender, BepInEx.Configuration.SettingChangedEventArgs e)
     {
-        Log.LogInfo($"{e.ChangedSetting.Definition} Setting has changed.");
+        if (AutoPickupPlugin.EnableLogging?.Value == true)
+        {
+            Log.LogInfo($"{e.ChangedSetting.Definition} Setting has changed.");
+        }
+    }
+
+    internal static void ShowItemAutoPickup(ItemDataTable item)
+    {
+        if (AutoPickupPlugin.EnableLogging?.Value == true && item is not null && !string.IsNullOrWhiteSpace(item.ScreenName))
+        {
+            Log.LogInfo($"{item.ScreenName} has auto pickup {(item.IsAutoPickup ? "enabled" : "disabled")}!");
+        }
     }
 }

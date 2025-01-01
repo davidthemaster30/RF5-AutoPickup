@@ -2,6 +2,11 @@ namespace RF5AutoPickup;
 
 internal static class KnownItemIDs
 {
+    internal const ItemID BranchItemID = ItemID.Item_Collection_0176; //Branch
+    internal const ItemID CornItemID = ItemID.Item_Crop_0034; //Corn
+    internal const ItemID RockItemID = ItemID.Item_Collection_0175; //Rock
+
+    internal const ItemID WitheredGrassItemID = ItemID.Item_Grass_0013; //Withered Grass
     internal static readonly ItemID[] ItemIDGrassesOnGroundToAutoPickupEng = [
         ItemID.Item_Grass_0001, //Indigo Grass
         ItemID.Item_Grass_0002, //Blue Grass
@@ -33,9 +38,4 @@ internal static class KnownItemIDs
         ItemID.Item_Murasakinokusa, //Purple Grass
         ItemID.Item_Yakuso  //Medicinal Herb
     ];
-
-    internal const ItemID WitheredGrassItemID = ItemID.Item_Grass_0013; //Withered Grass
-    internal const ItemID RockItemID = ItemID.Item_Collection_0175; //Rock
-    internal const ItemID BranchItemID = ItemID.Item_Collection_0176; //Branch
-    internal const ItemID CornItemID = ItemID.Item_Crop_0034; //Corn
 }

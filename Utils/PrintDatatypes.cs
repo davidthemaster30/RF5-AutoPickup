@@ -1,6 +1,6 @@
+using System.Text;
 using BepInEx.Logging;
 using DataTable;
-using System.Text;
 
 #if (NETSTANDARD2_1)
 using UnhollowerBaseLib;
@@ -16,20 +16,6 @@ internal static class PrintDatatypes
 {
     internal static readonly ManualLogSource Log = BepInEx.Logging.Logger.CreateLogSource("RF5AutoPickup");
     private static bool HasPrintedTable { get; set; } = false;
-
-    internal static void PrintDatatables(Il2CppArrayBase<SerializedItemDataTable> table)
-    {
-        if (AutoPickupPlugin.EnableDumpItemDataTablesLogging?.Value == true && !HasPrintedTable && Log is not null && table is not null && table.Count > 100)
-        {
-            foreach (var item in table)
-            {
-                Print(item);
-            }
-
-            //Only need to run once
-            HasPrintedTable = true;
-        }
-    }
 
     internal static void Print(SerializedItemDataTable item)
     {
@@ -47,38 +33,18 @@ internal static class PrintDatatypes
         }
     }
 
-    private static string SerializedItemDataTableToString(SerializedItemDataTable item)
+    internal static void PrintDatatables(Il2CppArrayBase<SerializedItemDataTable> table)
     {
-        if (item is null)
+        if (AutoPickupPlugin.EnableDumpItemDataTablesLogging?.Value == true && !HasPrintedTable && Log is not null && table is not null && table.Count > 100)
         {
-            return string.Empty;
+            foreach (var item in table)
+            {
+                Print(item);
+            }
+
+            //Only need to run once
+            HasPrintedTable = true;
         }
-
-        StringBuilder builder = new StringBuilder();
-        builder.Append("SerializedItemDataTable");
-        builder.Append(" { ");
-        if (PrintSerializedItemDataTableMembers(ref builder, item))
-        {
-            builder.Append(' ');
-        }
-
-        builder.Append('}');
-        return builder.ToString();
-    }
-
-    private static bool PrintSerializedItemDataTableMembers(ref StringBuilder builder, SerializedItemDataTable item)
-    {
-        if (builder is null || item is null)
-        {
-            return false;
-        }
-
-        builder.Append("Pointer = ").Append(item.Pointer);
-        builder.Append(", ID = ").Append(item.ID);
-        builder.Append(", ObjectClass = ").Append(item.ObjectClass);
-        builder.Append(", Body = ");
-        ItemDataTableToString(ref builder, item.Body);
-        return true;
     }
 
     private static string ItemDataTableToString(ItemDataTable item)
@@ -127,5 +93,39 @@ internal static class PrintDatatypes
         builder.Append(", ScreenName = ").Append(item.ScreenName);
 
         return true;
+    }
+
+    private static bool PrintSerializedItemDataTableMembers(ref StringBuilder builder, SerializedItemDataTable item)
+    {
+        if (builder is null || item is null)
+        {
+            return false;
+        }
+
+        builder.Append("Pointer = ").Append(item.Pointer);
+        builder.Append(", ID = ").Append(item.ID);
+        builder.Append(", ObjectClass = ").Append(item.ObjectClass);
+        builder.Append(", Body = ");
+        ItemDataTableToString(ref builder, item.Body);
+        return true;
+    }
+
+    private static string SerializedItemDataTableToString(SerializedItemDataTable item)
+    {
+        if (item is null)
+        {
+            return string.Empty;
+        }
+
+        StringBuilder builder = new StringBuilder();
+        builder.Append("SerializedItemDataTable");
+        builder.Append(" { ");
+        if (PrintSerializedItemDataTableMembers(ref builder, item))
+        {
+            builder.Append(' ');
+        }
+
+        builder.Append('}');
+        return builder.ToString();
     }
 }

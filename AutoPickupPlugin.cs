@@ -1,7 +1,7 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
-using HarmonyLib;
 using BepInEx.Unity.IL2CPP;
+using HarmonyLib;
 
 namespace RF5AutoPickup;
 
@@ -9,17 +9,27 @@ namespace RF5AutoPickup;
 [BepInProcess(GameProcessName)]
 public class AutoPickupPlugin : BasePlugin
 {
-    private const string PluginConfigSection = "Auto Pickup Changes";
-    private const string GameProcessName = "Rune Factory 5.exe";
+    internal static ConfigEntry<bool> DisableAutoPickupCorn;
+    internal static ConfigEntry<bool> EnableAutoPickupBranches;
 
     internal static ConfigEntry<bool> EnableAutoPickupGrasses;
     internal static ConfigEntry<bool> EnableAutoPickupRocks;
-    internal static ConfigEntry<bool> EnableAutoPickupBranches;
     internal static ConfigEntry<bool> EnableAutoPickupWitheredGrass;
-    internal static ConfigEntry<bool> DisableAutoPickupCorn;
+    internal static ConfigEntry<bool> EnableDumpItemDataTablesLogging;
 
     internal static ConfigEntry<bool> EnableLogging;
-    internal static ConfigEntry<bool> EnableDumpItemDataTablesLogging;
+    private const string GameProcessName = "Rune Factory 5.exe";
+    private const string PluginConfigSection = "Auto Pickup Changes";
+
+    public override void Load()
+    {
+        Log.LogInfo($"Plugin {MyPluginInfo.PLUGIN_NAME} {MyPluginInfo.PLUGIN_VERSION} is loading!");
+
+        LoadConfig();
+        Harmony.CreateAndPatchAll(typeof(ItemPropertyPatch));
+
+        Log.LogInfo($"Plugin {MyPluginInfo.PLUGIN_NAME} {MyPluginInfo.PLUGIN_VERSION} is loaded!");
+    }
 
     internal static bool IsModDisabled()
     {
@@ -46,15 +56,5 @@ public class AutoPickupPlugin : BasePlugin
         DisableAutoPickupCorn.SettingChanged += ItemPropertyPatch.OnSettingChanged;
 
         EnableDumpItemDataTablesLogging = Config.Bind("Debug", nameof(EnableDumpItemDataTablesLogging), false, "Set to true output itemdatatables to log for mod developpement (NOT RECOMMENDED).");
-    }
-
-    public override void Load()
-    {
-        Log.LogInfo($"Plugin {MyPluginInfo.PLUGIN_NAME} {MyPluginInfo.PLUGIN_VERSION} is loading!");
-
-        LoadConfig();
-        Harmony.CreateAndPatchAll(typeof(ItemPropertyPatch));
-
-        Log.LogInfo($"Plugin {MyPluginInfo.PLUGIN_NAME} {MyPluginInfo.PLUGIN_VERSION} is loaded!");
     }
 }

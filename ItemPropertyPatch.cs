@@ -1,6 +1,5 @@
 using BepInEx.Configuration;
 using HarmonyLib;
-using Loader.ID;
 using RF5AutoPickup.Print;
 
 namespace RF5AutoPickup;
@@ -9,8 +8,46 @@ namespace RF5AutoPickup;
 internal static class ItemPropertyPatch
 {
     internal static readonly Dictionary<ItemID, bool> ItemsToUpdate = new Dictionary<ItemID, bool>();
+    internal static bool isFarmArea { get; set; } = false;
 
     internal static bool isPatched { get; set; } = false;
+
+    //For #577
+    [HarmonyPatch(typeof(ItemDataTable), nameof(ItemDataTable.GetDataTable))]
+    [HarmonyPostfix]
+    internal static void AutoPickupFix(ItemID itemID, ref ItemDataTable __result)
+    {
+        //result is a ref and models use pointers, so only need to run once
+        if (AutoPickupPlugin.IsModDisabled() || isPatched || __result is null)
+        {
+            return;
+        }
+
+        if (KnownItemIDs.ItemIDGrassesOnGroundToAutoPickupEng.Contains(itemID))
+        {
+            __result.IsAutoPickup = !isFarmArea && AutoPickupPlugin.EnableAutoPickupGrasses.Value;
+        }
+
+        __result.IsAutoPickup = itemID switch
+        {
+            KnownItemIDs.WitheredGrassItemID => !isFarmArea && AutoPickupPlugin.EnableAutoPickupWitheredGrass.Value,
+            KnownItemIDs.RockItemID => !isFarmArea && AutoPickupPlugin.EnableAutoPickupRocks.Value,
+            KnownItemIDs.BranchItemID => !isFarmArea && AutoPickupPlugin.EnableAutoPickupBranches.Value,
+            KnownItemIDs.CornItemID => isFarmArea && !AutoPickupPlugin.DisableAutoPickupCorn.Value,
+            _ => __result.IsAutoPickup
+        };
+
+        PrintUpdates.ShowItemAutoPickup(__result);
+        TrackUpdate(itemID);
+
+        //force immediate update for next item
+        //If not, patch will be called repeatedly and hinder performance
+        var item = ItemsToUpdate.FirstOrDefault(x => !x.Value);
+        if (item.Key != default)
+        {
+            _ = ItemDataTable.GetDataTable(item.Key);
+        }
+    }
 
     internal static void OnSettingChanged(object sender, EventArgs e)
     {
@@ -23,15 +60,7 @@ internal static class ItemPropertyPatch
             return;
         }
 
-        isPatched = false;
-        //force update toggle on all
-        foreach (var key in ItemsToUpdate.Keys)
-        {
-            ItemsToUpdate[key] = false;
-        }
-
-        //force update
-        _ = ItemDataTable.GetDataTable(ItemsToUpdate.First().Key);
+        Reset();
     }
 
     internal static void Prepare()
@@ -51,59 +80,21 @@ internal static class ItemPropertyPatch
         }
     }
 
-    //For #577
-    [HarmonyPatch(typeof(ItemDataTable), nameof(ItemDataTable.GetDataTable))]
-    [HarmonyPostfix]
-    internal static void AutoPickupFix(ItemID itemID, ref ItemDataTable __result)
+    internal static void Reset()
     {
-        //result is a ref and models use pointers, so only need to run once
-        if (AutoPickupPlugin.IsModDisabled() || isPatched || __result is null)
+        isPatched = false;
+
+        foreach (var key in ItemsToUpdate.Keys)
         {
-            return;
+            ItemsToUpdate[key] = false;
         }
 
-        if (KnownItemIDs.ItemIDGrassesOnGroundToAutoPickupEng.Contains(itemID))
-        {
-            __result.IsAutoPickup = AutoPickupPlugin.EnableAutoPickupGrasses.Value;
-            PrintUpdates.ShowItemUpdate(__result);
-            TrackUpdate(itemID);
-        }
+        Update();
+    }
 
-        if (itemID == KnownItemIDs.WitheredGrassItemID)
-        {
-            __result.IsAutoPickup = AutoPickupPlugin.EnableAutoPickupWitheredGrass.Value;
-            PrintUpdates.ShowItemUpdate(__result);
-            TrackUpdate(itemID);
-        }
-
-        if (itemID == KnownItemIDs.RockItemID)
-        {
-            __result.IsAutoPickup = AutoPickupPlugin.EnableAutoPickupRocks.Value;
-            PrintUpdates.ShowItemUpdate(__result);
-            TrackUpdate(itemID);
-        }
-
-        if (itemID == KnownItemIDs.BranchItemID)
-        {
-            __result.IsAutoPickup = AutoPickupPlugin.EnableAutoPickupBranches.Value;
-            PrintUpdates.ShowItemUpdate(__result);
-            TrackUpdate(itemID);
-        }
-
-        if (itemID == KnownItemIDs.CornItemID)
-        {
-            __result.IsAutoPickup = !AutoPickupPlugin.DisableAutoPickupCorn.Value;
-            PrintUpdates.ShowItemUpdate(__result);
-            TrackUpdate(itemID);
-        }
-
-        //force immediate update for next item
-        //If not, patch will be called repeatedly and hinder performance
-        var item = ItemsToUpdate.FirstOrDefault(x => !x.Value);
-        if (item.Key != default)
-        {
-            _ = ItemDataTable.GetDataTable(item.Key);
-        }
+    internal static void Update()
+    {
+        _ = ItemDataTable.GetDataTable(ItemsToUpdate.First().Key);
     }
 
     private static void TrackUpdate(ItemID itemID)
